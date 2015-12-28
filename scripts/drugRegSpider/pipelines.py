@@ -8,14 +8,22 @@
 from scrapy.pipelines.files import FilesPipeline
 from scrapy.http import Request
 import os
+import logging
 
 class DrugregspiderFilesPipeline(FilesPipeline):
 
     def get_media_requests(self, item, info):
+        
         def already_done(url): 
           return os.path.isfile(self.store._get_filesystem_path('full/%s' % (url.split('/')[-1],)))
 
-        return [Request(x) for x in item.get(self.FILES_URLS_FIELD, []) if not already_done(x)]
+        done = [url for url in item.get(self.FILES_URLS_FIELD, []) if already_done(x)]
+
+        for n,u in enumerate(done):
+          logging.log(logging.INFO, "%n. File %s already done. SKIPPED
+" % (n,u))
+
+        return [Request(x) for x in item.get(self.FILES_URLS_FIELD, []) if not x in done]
 
     def file_path(self, request, response=None, info=None):        
         image_guid = request.url.split('/')[-1]
