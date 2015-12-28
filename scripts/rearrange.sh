@@ -4,6 +4,15 @@ src_dir='../data/pdfs/full'
 output_dir='../data'
 tmp_dir='tmp'
 
+dpi=150
+a4_150_dpi_lng=1754
+a4_150_dpi_shrt=1240
+a4_150_dpi_port=${a4_150_dpi_shrt}x${a4_150_dpi_lng}
+a4_300_dpi_lng=3508
+a4_300_dpi_shrt=2480
+a4_300_dpi_port=${a4_300_dpi_shrt}x${a4_300_dpi_lng}
+a4_300_dpi_lnds=${a4_300_dpi_lng}x${a4_300_dpi_shrt}
+
 for fl in `ls $src_dir`
 do
 
@@ -20,7 +29,6 @@ do
 		fi
   fi
 
-  dpi=150
   fl_dir=$output_dir/jpg/dpi-$dpi/"${fl%.*}"
   if [ ! -d $fl_dir ]
   then  
@@ -28,13 +36,17 @@ do
     ghostscript -dNOPAUSE -r$dpi -sDEVICE=jpeg -sOutputFile=$fl_dir/page-%03d.jpg $src_dir/$fl -c quit
     for jf in `ls $fl_dir`
     do
+      # crop textblock
       convert $fl_dir/$jf -crop \
       `convert $fl_dir/$jf -virtual-pixel edge -blur 0x10 -fuzz 15% -trim \
                 -format '%[fx:w+50]x%[fx:h+50]+%[fx:page.x-25]+%[fx:page.y-25]' \
                 info:` +repage  $tmp_dir/tmp.jpg
-      convert -resize 1240x1754 $tmp_dir/tmp.jpg -background white -gravity north -extent 1240x1754 $tmp_dir/tmp-a4.jpg     
-      mv $tmp_dir/tmp-a4.jpg $fl_dir/$jf   
+      # resize keeking aspect ratio to a4 150dpi          
+      convert -resize $a4_150_dpi_port $tmp_dir/tmp.jpg -background white -gravity north -extent $a4_150_dpi_port $tmp_dir/tmp-a4.jpg   
     done
+    #montage page-00[1-6].jpg -geometry $a4_150_dpi_port -tile 3x collage.jpg
+    #convert -resize $a4_300_dpi_lnds collage.jpg -background white -quality 1000 -gravity north -extent $a4_300_dpi_lnds tmp-a4.jpg     
+    mv $tmp_dir/tmp-a4.jpg $fl_dir/$jf    
   fi
   #if [ ! -e $output_dir/$fl ]
   #then
@@ -46,4 +58,4 @@ do
 
 done
 
-#rm -rf $tmp_dir/*
+rm -rf $tmp_dir/*
