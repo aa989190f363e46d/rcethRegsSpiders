@@ -12,10 +12,10 @@ a4_300_dpi_lng=3508
 a4_300_dpi_shrt=2480
 a4_300_dpi_port=${a4_300_dpi_shrt}x${a4_300_dpi_lng}
 a4_300_dpi_lnds=${a4_300_dpi_lng}x${a4_300_dpi_shrt}
+flc=1
 
 for fl in `ls $src_dir`
-do
-
+do  
   pgcnt=`pdfinfo $src_dir/$fl | grep Pages | sed 's/[^0-9]*//'`
   pps=$((($pgcnt+2)/2))
   
@@ -33,20 +33,33 @@ do
   if [ ! -d $fl_dir ]
   then  
     mkdir $fl_dir
-    ghostscript -dNOPAUSE -r$dpi -sDEVICE=jpeg -sOutputFile=$fl_dir/page-%03d.jpg $src_dir/$fl -c quit
-    for jf in `ls $fl_dir`
+    # extract pages to jpg
+    printf  "\e[0;31m[%-4s][%-32s]\e[m" $flc $fl
+    ghostscript -dNOPAUSE -r$dpi -sDEVICE=jpeg -sOutputFile=$fl_dir/page-%03d.jpg $src_dir/$fl -c quit > /dev/null
+    pgc=1
+    for jf in `ls $fl_dir`    
     do
+
+      printf "\e[0;34m[%s\e[m" $pgc
+
       # crop textblock
       convert $fl_dir/$jf -crop \
       `convert $fl_dir/$jf -virtual-pixel edge -blur 0x10 -fuzz 15% -trim \
                 -format '%[fx:w+50]x%[fx:h+50]+%[fx:page.x-25]+%[fx:page.y-25]' \
                 info:` +repage  $tmp_dir/tmp.jpg
-      # resize keeking aspect ratio to a4 150dpi          
+      # resize keeping aspect ratio to a4 150dpi          
       convert -resize $a4_150_dpi_port $tmp_dir/tmp.jpg -background white -gravity north -extent $a4_150_dpi_port $tmp_dir/tmp-a4.jpg   
+
+      pgc=$[$pgc+1]  
+      printf "\e[0;34m]\e[m"
     done
     #montage page-00[1-6].jpg -geometry $a4_150_dpi_port -tile 3x collage.jpg
     #convert -resize $a4_300_dpi_lnds collage.jpg -background white -quality 1000 -gravity north -extent $a4_300_dpi_lnds tmp-a4.jpg     
-    mv $tmp_dir/tmp-a4.jpg $fl_dir/$jf    
+    mv $tmp_dir/tmp-a4.jpg $fl_dir/$jf            
+
+    flc=$[$flc+1]
+    printf "\e[0;34m\n\e[m"
+
   fi
   #if [ ! -e $output_dir/$fl ]
   #then
