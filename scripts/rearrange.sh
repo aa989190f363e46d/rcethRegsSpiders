@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 
-src_dir='../data/pdfs/full'
-output_dir='../data'
-tmp_dir='tmp'
+src_dir=../data/pdfs/full
+output_dir=../data
+tmp_dir=tmp
+rearr_dir=$output_dir/pdfs/print-ready
+dvsrs=(6 4 2 1)
 
 dpi=150
 a4_150_dpi_lng=1754
@@ -14,20 +16,86 @@ a4_300_dpi_port=${a4_300_dpi_shrt}x${a4_300_dpi_lng}
 a4_300_dpi_lnds=${a4_300_dpi_lng}x${a4_300_dpi_shrt}
 flc=1
 
-for fl in `ls $src_dir`
-do  
-  pgcnt=`pdfinfo $src_dir/$fl | grep Pages | sed 's/[^0-9]*//'`
-  pps=$((($pgcnt+2)/2))
-  
-  if (($pgcnt <= 6))
-  then 
-		pps=$(($pgcnt))
-  else 
-		if (($pgcnt >12))
-		then
-	    pps=6
-		fi
-  fi
+collage() {
+
+  l_fl_dir=$1
+  C=$2
+  rmndr=$C
+
+  mntgc=1
+  mntg_files=""
+
+  printf  "\e[0;31m    [%-32s]\e[m" `basename $l_fl_dir`
+
+  # покуда не исчерпаны все страницы
+  while [[ $rmndr -ne 0 ]]; do
+    # найти максимальный делитель
+    for dvsr in ${dvsrs[@]}; do
+      fr=$(($rmndr/$dvsr))
+      # то есть такой, чтобы остаток
+      # от целочисленного деления был не 0
+      if [[ $fr -gt 0 ]]; then
+        rmndr=$(($rmndr%$dvsr))
+        break
+      fi
+    done
+
+    # тогда для каждой группы страниц
+    # размером в текущий делитель
+    for mntgpgn in `seq 0 $(($fr-1))`; do
+      files=''
+      u_bound=$((($mntgpgn+1)*$dvsr+$C-($rmndr+$dvsr*$fr)))
+      l_bound=$((1 + $mntgpgn*$dvsr+$C-($rmndr+$dvsr*$fr)))     
+      for pgn in `seq $l_bound $u_bound`; do
+        files=$files`printf ' %s/page-%03d.jpg' $l_fl_dir $pgn`
+      done    
+      printf "\e[0;34m[%02d–%02d\e[m" $l_bound $u_bound
+      # Выбрать раскладку для коллажа
+      # Выбрать выходное разрешение и ориентацию
+      case $dvsr in
+        6 )
+          cres=$a4_300_dpi_lnds
+          tile=3x
+          ;;
+        4 )
+          cres=$a4_300_dpi_port
+          tile=2x
+          ;;
+        2 )
+          cres=$a4_300_dpi_lnds
+          tile=2x
+          ;;
+        * )
+          cres=$a4_300_dpi_port
+          tile=''
+          ;;
+      esac
+
+      if [[ $dvsr -ne 1 ]]; then
+        # Монтирует изображения отдельных страниц в коллаж
+        montage $files -geometry $a4_150_dpi_port -tile $tile $tmp_dir/collage-tmp.jpg
+        # Подгоняет размер коллажа под формат
+        # листа для печати, с учетом разрешения
+        convert -resize $cres $tmp_dir/collage-tmp.jpg -background white -gravity north -extent $cres $tmp_dir/collage-$mntgc.jpg
+      else
+        #cp $files $tmp_dir/collage-$mntgc.jpg
+        convert -resize $cres $files -background white -gravity north -extent $cres $tmp_dir/collage-$mntgc.jpg
+      fi
+
+      mntg_files=$mntg_files" "$tmp_dir/collage-$mntgc.jpg
+      mntgc=$(($mntgc+1))   
+
+      printf "\e[0;34m]\e[m"
+
+    done
+  done
+
+  convert $mntg_files $rearr_dir/`basename $l_fl_dir`.pdf
+  printf  "\e[0;31m[%-32s]\e[m\n" `basename $l_fl_dir`.pdf
+  rm -rf $tmp_dir/*
+}
+
+for fl in `ls $src_dir`; do  
 
   fl_dir=$output_dir/jpg/dpi-$dpi/"${fl%.*}"
   if [ ! -d $fl_dir ]
@@ -53,14 +121,19 @@ do
       pgc=$[$pgc+1]  
       printf "\e[0;34m]\e[m"
     done
-    #montage page-00[1-6].jpg -geometry $a4_150_dpi_port -tile 3x collage.jpg
-    #convert -resize $a4_300_dpi_lnds collage.jpg -background white -quality 1000 -gravity north -extent $a4_300_dpi_lnds tmp-a4.jpg     
+
     mv $tmp_dir/tmp-a4.jpg $fl_dir/$jf            
 
     flc=$[$flc+1]
     printf "\e[0;34m\n\e[m"
 
+
   fi
+
+  if [[ -d $fl_dir  &&  ! -f $rearr_dir/`basename $fl_dir`.pdf ]]; then
+    collage $fl_dir `ls $fl_dir/page-*.jpg | wc -l`
+  fi
+
   #if [ ! -e $output_dir/$fl ]
   #then
   #  pdf2ps $src_dir/$fl $tmp_dir/tmp.ps

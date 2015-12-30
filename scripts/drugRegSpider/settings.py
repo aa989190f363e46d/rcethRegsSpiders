@@ -36,7 +36,7 @@ USER_AGENT = u'Mozilla/5.0 ' + u''.join([choice(digits + letters)for _ in xrange
 #CONCURRENT_REQUESTS_PER_IP=10
 
 AUTOTHROTTLE_ENABLED=True
-AUTOTHROTTLE_START_DELAY=13
+AUTOTHROTTLE_START_DELAY=3
 AUTOTHROTTLE_MAX_DELAY=200
 AUTOTHROTTLE_DEBUG=False
 CONCURRENT_REQUESTS_PER_DOMAIN=7
@@ -82,7 +82,7 @@ ITEM_PIPELINES = {
      'drugRegSpider.pipelines.DrugregspiderFilesPipeline': 1
 #    'drugRegSpider.pipelines.SomePipeline': 300,
 }
-FILES_STORE = '/home/muzzy/Desktop/drugRegSpider/data/pdfs'
+FILES_STORE = '/home/muzzy/Documents/py_pract/rcethRegsSpiders/data/pdfs'
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See http://doc.scrapy.org/en/latest/topics/autothrottle.html
 # NOTE: AutoThrottle will honour the standard settings for concurrency and delay
