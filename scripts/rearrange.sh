@@ -90,14 +90,14 @@ collage() {
     done
   done
 
+  printf  "\e[0;31m[making pdf…]\e[m"
   convert $mntg_files $rearr_dir/`basename $l_fl_dir`.pdf
-  printf  "\e[0;31m[%-32s]\e[m\n" `basename $l_fl_dir`.pdf
   rm -rf $tmp_dir/*
 }
 
 for fl in `ls $src_dir`; do  
 
-  printf  "\e[0;31m[%-4s][%-32s]\e[m" $flc $fl
+  printf  "\n\e[0;31m[%-4s][%-32s]\e[m" $flc $fl
 
   fl_dir=$output_dir/jpg/dpi-$dpi/"${fl%.*}"
   if [ ! -d $fl_dir ]
