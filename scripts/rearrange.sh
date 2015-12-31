@@ -25,7 +25,7 @@ collage() {
   mntgc=1
   mntg_files=""
 
-  printf  "\e[0;31m    \e[m"
+  printf  "\e[0;31m\n    \e[m"
 
   # покуда не исчерпаны все страницы
   while [[ $rmndr -ne 0 ]]; do
@@ -128,9 +128,6 @@ for fl in `ls $src_dir`; do
 
     mv $tmp_dir/tmp-a4.jpg $fl_dir/$jf            
 
-    printf "\e[0;34m\n\e[m"
-
-
   fi
 
   if [[ -d $fl_dir  &&  ! -f $rearr_dir/`basename $fl_dir`.pdf ]]; then
@@ -146,6 +143,7 @@ for fl in `ls $src_dir`; do
   #fi
 
   flc=$[$flc+1]
+  printf "\e[0;34m\n\e[m"
 
 done
 
