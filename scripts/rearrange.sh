@@ -53,9 +53,9 @@ collage() {
       # Выбрать раскладку для коллажа
       # Выбрать выходное разрешение и ориентацию
       case $dvsr in
-        6 )
+        8 )
           cres=$a4_300_dpi_lnds
-          tile=3x
+          tile=4x
           ;;
         4 )
           cres=$a4_300_dpi_port
