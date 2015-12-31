@@ -4,7 +4,7 @@ src_dir=../data/pdfs/full
 output_dir=../data
 tmp_dir=tmp
 rearr_dir=$output_dir/pdfs/print-ready
-dvsrs=(6 4 2 1)
+dvsrs=(8 4 2 1)
 
 dpi=150
 a4_150_dpi_lng=1754

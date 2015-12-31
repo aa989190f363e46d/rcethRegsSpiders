@@ -20,7 +20,7 @@ class DrugregspiderFilesPipeline(FilesPipeline):
         done = [url for url in item.get(self.FILES_URLS_FIELD, []) if already_done(url)]
 
         for n,u in enumerate(done):
-          logging.log(logging.INFO, u'%n. File %s already done. SKIPPED' % (n,u))
+          logging.log(logging.INFO, u'%i. File %s already done. SKIPPED' % (n,u))
 
         return [Request(x) for x in item.get(self.FILES_URLS_FIELD, []) if not x in done]
 

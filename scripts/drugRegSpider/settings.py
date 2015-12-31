@@ -2,6 +2,7 @@
 
 from random import choice
 from string import letters,digits
+from os.path import abspath
 
 # Scrapy settings for drugRegSpider project
 #
@@ -82,7 +83,7 @@ ITEM_PIPELINES = {
      'drugRegSpider.pipelines.DrugregspiderFilesPipeline': 1
 #    'drugRegSpider.pipelines.SomePipeline': 300,
 }
-FILES_STORE = '/home/muzzy/Documents/py_pract/rcethRegsSpiders/data/pdfs'
+FILES_STORE = abspath('../../data/pdfs')
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See http://doc.scrapy.org/en/latest/topics/autothrottle.html
 # NOTE: AutoThrottle will honour the standard settings for concurrency and delay
