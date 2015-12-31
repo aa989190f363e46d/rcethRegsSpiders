@@ -31,12 +31,17 @@ collage() {
   while [[ $rmndr -ne 0 ]]; do
     # найти максимальный делитель
     for dvsr in ${dvsrs[@]}; do
-      fr=$(($rmndr/$dvsr))
-      # то есть такой, чтобы остаток
-      # от целочисленного деления был не 0
-      if [[ $fr -gt 0 ]]; then
-        rmndr=$(($rmndr%$dvsr))
+      if [[ $rmndr -le $dvsr ]]; then
+        rmndr=0
         break
+      else
+        fr=$(($rmndr/$dvsr))
+        # то есть такой, чтобы остаток
+        # от целочисленного деления был не 0
+        if [[ $fr -gt 0 ]]; then
+          rmndr=$(($rmndr%$dvsr))
+          break
+        fi
       fi
     done
 
