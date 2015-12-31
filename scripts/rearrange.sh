@@ -25,7 +25,7 @@ collage() {
   mntgc=1
   mntg_files=""
 
-  printf  "\e[0;31m    [%-32s]\e[m" `basename $l_fl_dir`
+  printf  "\e[0;31m    \e[m"
 
   # покуда не исчерпаны все страницы
   while [[ $rmndr -ne 0 ]]; do
@@ -97,12 +97,16 @@ collage() {
 
 for fl in `ls $src_dir`; do  
 
+  printf  "\e[0;31m[%-4s][%-32s]\e[m" $flc $fl
+
   fl_dir=$output_dir/jpg/dpi-$dpi/"${fl%.*}"
   if [ ! -d $fl_dir ]
   then  
+
+    printf  "\e[0;31m\n    \e[m"
+
     mkdir $fl_dir
-    # extract pages to jpg
-    printf  "\e[0;31m[%-4s][%-32s]\e[m" $flc $fl
+    # extract pages to jpg    
     ghostscript -dNOPAUSE -r$dpi -sDEVICE=jpeg -sOutputFile=$fl_dir/page-%03d.jpg $src_dir/$fl -c quit > /dev/null
     pgc=1
     for jf in `ls $fl_dir`    
@@ -124,7 +128,6 @@ for fl in `ls $src_dir`; do
 
     mv $tmp_dir/tmp-a4.jpg $fl_dir/$jf            
 
-    flc=$[$flc+1]
     printf "\e[0;34m\n\e[m"
 
 
@@ -141,6 +144,8 @@ for fl in `ls $src_dir`; do
   #  ps2pdf $tmp_dir/tmp.n.ps $output_dir/$fl
   #  rm -rf $tmp_dir/*
   #fi
+
+  flc=$[$flc+1]
 
 done
 
