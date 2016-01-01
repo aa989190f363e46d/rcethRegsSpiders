@@ -69,7 +69,7 @@ collage() {
         # а вот и проблемы из-за грязи:
         #   нужно проверять не выпадаем-ли мы за границы
         #   общего количества листов
-        if [[ -f `printf ' %s/page-%03d.jpg' $l_fl_dir $pgn`]]; then
+        if [[ -f `printf ' %s/page-%03d.jpg' $l_fl_dir $pgn` ]]; then
           files=$files`printf ' %s/page-%03d.jpg' $l_fl_dir $pgn`
         fi
       done    
