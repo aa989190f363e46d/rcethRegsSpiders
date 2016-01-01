@@ -31,7 +31,18 @@ collage() {
   while [[ $rmndr -ne 0 ]]; do
     # найти максимальный делитель
     for dvsr in ${dvsrs[@]}; do
-      if [[ $rmndr -le $dvsr ]]; then
+      # Но если текущая страница коллажа
+      # имеет четный номер
+      if [[ $(($mntgc%2)) -eq 0 ]]; then
+        # То попытаться разместить все оставшиеся
+        # страницы на один лист
+        # с наименьшим остатком
+        for dvsrr in ${dvsrs[@]}; do
+          if [[ $((9-$dvsrr)) -ge $rmndr ]]; then
+            dvsr=$dvsrr
+            break
+          fi
+        done
         rmndr=0
         break
       else
