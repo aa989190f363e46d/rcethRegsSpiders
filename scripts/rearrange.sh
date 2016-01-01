@@ -25,11 +25,12 @@ collage() {
   mntgc=1
   mntg_files=""
 
-  printf  "\e[0;31m\n    \e[m"
+  printf  "\e[0;36m\n    \e[m"
 
   # покуда не исчерпаны все страницы
   while [[ $rmndr -ne 0 ]]; do
-    # найти максимальный делитель
+    # найти максимальный делитель из перечня
+    # не превышающий количество оставшихся страниц
     for dvsr in ${dvsrs[@]}; do
       # Но если текущая страница коллажа
       # имеет четный номер
@@ -69,11 +70,11 @@ collage() {
         # а вот и проблемы из-за грязи:
         #   нужно проверять не выпадаем-ли мы за границы
         #   общего количества листов
-        if [[ -f `printf ' %s/page-%03d.jpg' $l_fl_dir $pgn` ]]; then
+        if [[ -f `printf '%s/page-%03d.jpg' $l_fl_dir $pgn` ]]; then # не думай о пробелах свысока…
           files=$files`printf ' %s/page-%03d.jpg' $l_fl_dir $pgn`
         fi
       done    
-      printf "\e[0;34m[%02d–%02d\e[m" $l_bound $u_bound
+      printf "\e[0;33m[%02d–%02d\e[m" $l_bound $u_bound
       # Выбрать раскладку для коллажа
       # Выбрать выходное разрешение и ориентацию
       case $dvsr in
@@ -109,25 +110,25 @@ collage() {
       mntg_files=$mntg_files" "$tmp_dir/collage-$mntgc.jpg
       mntgc=$(($mntgc+1))   
 
-      printf "\e[0;34m]\e[m"
+      printf "\e[0;33m]\e[m"
 
     done
   done
 
-  printf  "\e[0;31m[making pdf…]\e[m"
+  printf  "\e[0;36m[making pdf…]\e[m"
   convert $mntg_files $rearr_dir/`basename $l_fl_dir`.pdf
   rm -rf $tmp_dir/*
 }
 
 for fl in `ls $src_dir`; do  
 
-  printf  "\n\e[0;31m[%-4s][%-32s]\e[m" $flc $fl
+  printf  "\n\e[0;36m[%-4s][%-32s]\e[m" $flc $fl
 
   fl_dir=$output_dir/jpg/dpi-$dpi/"${fl%.*}"
   if [ ! -d $fl_dir ]
   then  
 
-    printf  "\e[0;31m\n    \e[m"
+    printf  "\e[0;36m\n    \e[m"
 
     mkdir $fl_
     dir
@@ -137,7 +138,7 @@ for fl in `ls $src_dir`; do
     for jf in `ls $fl_dir`    
     do
 
-      printf "\e[0;34m[%s\e[m" $pgc
+      printf "\e[0;33m[%s\e[m" $pgc
 
       # crop textblock
       convert $fl_dir/$jf -crop \
@@ -148,7 +149,7 @@ for fl in `ls $src_dir`; do
       convert -resize $a4_150_dpi_port $tmp_dir/tmp.jpg -background white -gravity north -extent $a4_150_dpi_port $tmp_dir/tmp-a4.jpg   
 
       pgc=$[$pgc+1]  
-      printf "\e[0;34m]\e[m"
+      printf "\e[0;33m]\e[m"
     done
 
     mv $tmp_dir/tmp-a4.jpg $fl_dir/$jf            
@@ -168,7 +169,7 @@ for fl in `ls $src_dir`; do
   #fi
 
   flc=$[$flc+1]
-  printf "\e[0;34m\n\e[m"
+  printf "\e[0;33m\n\e[m"
 
 done
 
