@@ -66,7 +66,12 @@ collage() {
       u_bound=$((($mntgpgn+1)*$dvsr+$C-($rmndr+$dvsr*$fr)))
       l_bound=$((1 + $mntgpgn*$dvsr+$C-($rmndr+$dvsr*$fr)))     
       for pgn in `seq $l_bound $u_bound`; do
-        files=$files`printf ' %s/page-%03d.jpg' $l_fl_dir $pgn`
+        # а вот и проблемы из-за грязи:
+        #   нужно проверять не выпадаем-ли мы за границы
+        #   общего количества листов
+        if [[ -f `printf ' %s/page-%03d.jpg' $l_fl_dir $pgn`]]; then
+          files=$files`printf ' %s/page-%03d.jpg' $l_fl_dir $pgn`
+        fi
       done    
       printf "\e[0;34m[%02d–%02d\e[m" $l_bound $u_bound
       # Выбрать раскладку для коллажа
@@ -124,7 +129,8 @@ for fl in `ls $src_dir`; do
 
     printf  "\e[0;31m\n    \e[m"
 
-    mkdir $fl_dir
+    mkdir $fl_
+    dir
     # extract pages to jpg    
     ghostscript -dNOPAUSE -r$dpi -sDEVICE=jpeg -sOutputFile=$fl_dir/page-%03d.jpg $src_dir/$fl -c quit > /dev/null
     pgc=1
