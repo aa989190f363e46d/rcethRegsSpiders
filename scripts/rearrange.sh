@@ -43,6 +43,9 @@ collage() {
             break
           fi
         done
+        # Очень грязно
+        C=$(($C-$rmndr+$dvsr))
+        fr=1
         rmndr=0
         break
       else
