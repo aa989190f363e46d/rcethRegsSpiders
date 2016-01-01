@@ -39,7 +39,7 @@ collage() {
         # страницы на один лист
         # с наименьшим остатком
         for dvsrr in ${dvsrs[@]}; do
-          if [[ $((9-$dvsrr)) -ge $rmndr ]]; then
+          if [[ $(($rmndr%$dvsrr)) -lt $rmndr ]]; then
             dvsr=$dvsrr
             break
           fi
