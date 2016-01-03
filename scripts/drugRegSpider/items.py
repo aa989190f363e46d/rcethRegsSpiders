@@ -15,6 +15,8 @@ class DrugregspiderItem(scrapy.Item):
     name              = scrapy.Field()    
     #Международное наименование  
     mnn               = scrapy.Field()    
+    #Формы выпуска
+    lForm             = scrapy.Field()        
     #Производитель   
     manufacturer      = scrapy.Field()    
     #Заявитель  

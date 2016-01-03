@@ -39,6 +39,7 @@ class InstrspiderSpider(scrapy.Spider):
         u'FOpt.DirOrder':                         u'asc',
         u'FOpt.VFiles':                           u'true',
         u'FOpt.VFiles':                           u'false',
+        u'FOpt.VEField1':                         u'true',
         u'FOpt.VEField1':                         u'false',
         u'QueryStringFind':                       controllerState
         }
@@ -67,12 +68,13 @@ class InstrspiderSpider(scrapy.Spider):
             currItem = DrugregspiderItem()
             currItem["name"]              = tr.xpath('td')[1].xpath('a/text()').extract()[0]
             currItem["mnn"]               = tr.xpath('td')[2].xpath('text()').extract()[0].strip()
-            currItem["manufacturer"]      = tr.xpath('td')[3].xpath('text()').extract()[0].strip()
-            currItem["invoker"]           = tr.xpath('td')[4].xpath('text()').extract()[0].strip()
-            currItem["certNum"]           = tr.xpath('td')[5].xpath('text()').extract()[0].strip()
-            currItem["regDtBegin"]        = tr.xpath('td')[6].xpath('text()').extract()[0].strip()
-            currItem["regDtExpire"]       = tr.xpath('td')[7].xpath('text()').extract()[0].strip()
-            currItem["originality"]       = tr.xpath('td')[8].xpath('text()').extract()[0].strip()
+            currItem["lForm"]             = tr.xpath('td')[3].xpath('text()').extract()[0].strip()            
+            currItem["manufacturer"]      = tr.xpath('td')[4].xpath('text()').extract()[0].strip()
+            currItem["invoker"]           = tr.xpath('td')[5].xpath('text()').extract()[0].strip()
+            currItem["certNum"]           = tr.xpath('td')[6].xpath('text()').extract()[0].strip()
+            currItem["regDtBegin"]        = tr.xpath('td')[7].xpath('text()').extract()[0].strip()
+            currItem["regDtExpire"]       = tr.xpath('td')[8].xpath('text()').extract()[0].strip()
+            currItem["originality"]       = tr.xpath('td')[9].xpath('text()').extract()[0].strip()
             currItem["manuals"]           = ''.join(tr.xpath('td')[1].xpath('span/a').extract())
             currItem["file_urls"]           = [u for u in [u'http://www.rceth.by%s' % (href,) for href in tr.xpath('td')[1].xpath('span/a/@href').extract()] if not self._file_already_done(u)]
 
