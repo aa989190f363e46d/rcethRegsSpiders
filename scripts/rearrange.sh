@@ -34,14 +34,23 @@ collage() {
     for dvsr in ${dvsrs[@]}; do
       # Но если текущая страница коллажа
       # имеет четный номер
-      if [[ $(($mntgc%2)) -eq 0 ]]; then
+      #if [[ $(($mntgc%2)) -eq 0 ]]; then
+      # то есть если страниц было больше 
+      # максимального количества страниц 
+      # допустимых в коллаже
+      if [[ $rmndr -lt ${dvsrs[0]} ]]; then   
         # То попытаться разместить все оставшиеся
         # страницы на один лист
         # с наименьшим остатком
+        ldvsr=${dvsrs[0]}
+        lrmndr=$(($rmndr%$ldvsr))
         for dvsrr in ${dvsrs[@]}; do
-          if [[ $(($rmndr%$dvsrr)) -lt $rmndr ]]; then
-            dvsr=$dvsrr
+          if [[ $(($rmndr%$dvsrr)) -lt $lrmndr || $lrmndr -eq 0 ]]; then
+            dvsr=$ldvsr
             break
+          else
+            ldvsr=$dvsrr
+            lrmndr=$(($rmndr%$ldvsr))
           fi
         done
         # Очень грязно
