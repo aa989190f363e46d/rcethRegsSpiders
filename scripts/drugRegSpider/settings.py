@@ -64,6 +64,7 @@ CONCURRENT_REQUESTS_PER_DOMAIN=7
 
 RETRY_TIMES = 10
 
+DOWNLOAD_TIMEOUT=15*60
 # Enable or disable downloader middlewares
 # See http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {

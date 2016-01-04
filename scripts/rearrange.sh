@@ -130,8 +130,7 @@ for fl in `ls $src_dir`; do
 
     printf  "\e[0;36m\n    \e[m"
 
-    mkdir $fl_
-    dir
+    mkdir $fl_dir
     # extract pages to jpg    
     ghostscript -dNOPAUSE -r$dpi -sDEVICE=jpeg -sOutputFile=$fl_dir/page-%03d.jpg $src_dir/$fl -c quit > /dev/null
     pgc=1
