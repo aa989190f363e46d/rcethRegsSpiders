@@ -45,6 +45,17 @@ collage() {
         ldvsr=${dvsrs[0]}
         lrmndr=$(($rmndr%$ldvsr))
         for dvsrr in ${dvsrs[@]}; do
+          # если можно замостить один
+          # лист коллажа без остатка
+          if [[ $rmndr -eq $dvsrr ]]; then
+            dvsr=$dvsrr
+            break
+          fi
+          # если остаток страниц не кратен
+          # ни одному из вариантов коллажа
+          # то возьмем такое размещение, 
+          # что делитель будет минимальным 
+          # среди тех, которые больше самого остатка 
           if [[ $(($rmndr%$dvsrr)) -lt $lrmndr || $lrmndr -eq 0 ]]; then
             dvsr=$ldvsr
             break
