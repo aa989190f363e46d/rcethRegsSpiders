@@ -10,10 +10,14 @@ dpi=150
 a4_150_dpi_lng=1754
 a4_150_dpi_shrt=1240
 a4_150_dpi_port=${a4_150_dpi_shrt}x${a4_150_dpi_lng}
-a4_300_dpi_lng=3508
-a4_300_dpi_shrt=2480
+a4_300_dpi_lng=$(($a4_150_dpi_lng*2))
+a4_300_dpi_shrt=$(($a4_150_dpi_shrt*2))
 a4_300_dpi_port=${a4_300_dpi_shrt}x${a4_300_dpi_lng}
 a4_300_dpi_lnds=${a4_300_dpi_lng}x${a4_300_dpi_shrt}
+a4_600_dpi_lng=$(($a4_150_dpi_lng*4))
+a4_600_dpi_shrt=$(($a4_150_dpi_shrt*4))
+a4_600_dpi_port=${a4_600_dpi_shrt}x${a4_600_dpi_lng}
+a4_600_dpi_lnds=${a4_600_dpi_lng}x${a4_600_dpi_shrt}
 flc=1
 
 collage() {
@@ -99,7 +103,8 @@ collage() {
       # Выбрать выходное разрешение и ориентацию
       case $dvsr in
         8 )
-          cres=$a4_300_dpi_lnds
+          #cres=$a4_300_dpi_lnds
+          cres=$a4_600_dpi_lnds
           tile=4x
           ;;
         4 )
