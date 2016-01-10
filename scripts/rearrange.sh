@@ -94,8 +94,8 @@ collage() {
         # а вот и проблемы из-за грязи:
         #   нужно проверять не выпадаем-ли мы за границы
         #   общего количества листов
-        if [[ -f `printf '%s/page-%03d.jpg' $l_fl_dir $pgn` ]]; then # не думай о пробелах свысока…
-          files=$files`printf ' %s/page-%03d.jpg' $l_fl_dir $pgn`
+        if [[ -f `printf '%s/page-%03d.pbm' $l_fl_dir $pgn` ]]; then # не думай о пробелах свысока…
+          files=$files`printf ' %s/page-%03d.pbm' $l_fl_dir $pgn`
         fi
       done    
       printf "\e[0;33m[%02d–%02d\e[m" $l_bound $u_bound
@@ -123,16 +123,16 @@ collage() {
 
       if [[ $dvsr -ne 1 ]]; then
         # Монтирует изображения отдельных страниц в коллаж
-        montage $files -geometry $a4_150_dpi_port -tile $tile $tmp_dir/collage-tmp.jpg
+        montage $files -geometry $a4_150_dpi_port -tile $tile $tmp_dir/collage-tmp.pbm
         # Подгоняет размер коллажа под формат
         # листа для печати, с учетом разрешения
-        convert -resize $cres $tmp_dir/collage-tmp.jpg -background white -gravity north -extent $cres $tmp_dir/collage-$mntgc.jpg
+        convert -resize $cres $tmp_dir/collage-tmp.pbm -background white -gravity north -extent $cres $tmp_dir/collage-$mntgc.pbm
       else
         #cp $files $tmp_dir/collage-$mntgc.jpg
-        convert -resize $cres $files -background white -gravity north -extent $cres $tmp_dir/collage-$mntgc.jpg
+        convert -resize $cres $files -background white -gravity north -extent $cres $tmp_dir/collage-$mntgc.pbm
       fi
 
-      mntg_files=$mntg_files" "$tmp_dir/collage-$mntgc.jpg
+      mntg_files=$mntg_files" "$tmp_dir/collage-$mntgc.pbm
       mntgc=$(($mntgc+1))   
 
       printf "\e[0;33m]\e[m"
@@ -149,7 +149,7 @@ for fl in `ls $src_dir`; do
 
   printf  "\n\e[0;36m[%-4s][%-32s]\e[m" $flc $fl
 
-  fl_dir=$output_dir/jpg/dpi-$dpi/"${fl%.*}"
+  fl_dir=$output_dir/pbm/"${fl%.*}"
   if [ ! -d $fl_dir ]
   then  
 
@@ -157,7 +157,7 @@ for fl in `ls $src_dir`; do
 
     mkdir $fl_dir
     # extract pages to jpg    
-    ghostscript -dNOPAUSE -r$dpi -sDEVICE=jpeg -sOutputFile=$fl_dir/page-%03d.jpg $src_dir/$fl -c quit > /dev/null
+    ghostscript -dNOPAUSE -r$dpi -sDEVICE=pbm -sOutputFile=$fl_dir/page-%03d.pbm $src_dir/$fl -c quit > /dev/null
     pgc=1
     for jf in `ls $fl_dir`    
     do
@@ -168,20 +168,20 @@ for fl in `ls $src_dir`; do
       convert $fl_dir/$jf -crop \
       `convert $fl_dir/$jf -virtual-pixel edge -blur 0x10 -fuzz 15% -trim \
                 -format '%[fx:w+50]x%[fx:h+50]+%[fx:page.x-25]+%[fx:page.y-25]' \
-                info:` +repage  $tmp_dir/tmp.jpg
+                info:` +repage  $tmp_dir/tmp.pbm
       # resize keeping aspect ratio to a4 150dpi          
-      convert -resize $a4_150_dpi_port $tmp_dir/tmp.jpg -background white -gravity north -extent $a4_150_dpi_port $tmp_dir/tmp-a4.jpg   
+      convert -resize $a4_150_dpi_port $tmp_dir/tmp.pbm -background white -gravity north -extent $a4_150_dpi_port $tmp_dir/tmp-a4.pbm  
 
       pgc=$[$pgc+1]  
       printf "\e[0;33m]\e[m"
     done
 
-    mv $tmp_dir/tmp-a4.jpg $fl_dir/$jf            
+    mv $tmp_dir/tmp-a4.pbm $fl_dir/$jf            
 
   fi
 
   if [[ -d $fl_dir  &&  ! -f $rearr_dir/`basename $fl_dir`.pdf ]]; then
-    collage $fl_dir `ls $fl_dir/page-*.jpg | wc -l`
+    collage $fl_dir `ls $fl_dir/page-*.pbm | wc -l`
   fi
 
   #if [ ! -e $output_dir/$fl ]

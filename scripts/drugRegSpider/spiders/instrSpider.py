@@ -29,19 +29,13 @@ class InstrspiderSpider(scrapy.Spider):
         u'FProps[0].CritElems[0].Crit':           u'Start',
         u'FProps[0].CritElems[0].Excl':           u'false',
         u'FOpt.VFiles':                           u'true',
-        #u'FOpt.VFiles':                           u'false',
         u'FOpt.VEField1':                         u'true',
-        #u'FOpt.VEField1':                         u'false',
         u'IsPostBack':                            u'true',
         u'PropSubmit':                            u'FOpt_PageN',
         u'ValueSubmit':                           u'%i' % (pageNum,),
         u'FOpt.PageC':                            u'100',
         u'FOpt.OrderBy':                          u'N_LP',
         u'FOpt.DirOrder':                         u'asc',
-        #u'FOpt.VFiles':                           u'true',
-        #u'FOpt.VFiles':                           u'false',
-        #u'FOpt.VEField1':                         u'true',
-        #u'FOpt.VEField1':                         u'false',
         u'QueryStringFind':                       controllerState
         }
         
@@ -76,8 +70,8 @@ class InstrspiderSpider(scrapy.Spider):
             currItem["regDtBegin"]        = tr.xpath('td')[7].xpath('text()').extract()[0].strip()
             currItem["regDtExpire"]       = tr.xpath('td')[8].xpath('text()').extract()[0].strip()
             currItem["originality"]       = tr.xpath('td')[9].xpath('text()').extract()[0].strip()
-            currItem["manuals"]           = ''.join(tr.xpath('td')[1].xpath('span/a').extract())
-            currItem["file_urls"]           = [u for u in [u'http://www.rceth.by%s' % (href,) for href in tr.xpath('td')[1].xpath('span/a/@href').extract()] if not self._file_already_done(u)]
+            currItem["manuals"]           = '\n'.join([u':'.join([a.xpath('text()').extract()[0],a.xpath('@href').extract()[0].split('/')[-1]]) for a in tr.xpath('td')[1].xpath('span/a')])
+            currItem["file_urls"]           = [u for u in [u'http://www.rceth.by%s' % (href,) for href in tr.xpath('td')[1].xpath('span/a/@href').extract()]]
 
             yield currItem
             
