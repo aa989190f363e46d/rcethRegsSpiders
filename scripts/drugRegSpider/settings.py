@@ -72,6 +72,8 @@ DOWNLOADER_MIDDLEWARES = {
       'scrapy.downloadermiddlewares.retry.RetryMiddleware': 1
 }
 
+FEED_EXPORT_FIELDS = ["mnn","name","lForm","certNum","manufacturer","invoker","regDtBegin","regDtExpire","originality","manuals"]
+
 # Enable or disable extensions
 # See http://scrapy.readthedocs.org/en/latest/topics/extensions.html
 #EXTENSIONS = {
@@ -81,7 +83,8 @@ DOWNLOADER_MIDDLEWARES = {
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-     'drugRegSpider.pipelines.DrugregspiderFilesPipeline': 1
+     'drugRegSpider.pipelines.DrugregspiderFilesPipeline': 10,
+     'drugRegSpider.pipelines.SQLiteRegistryStorePipeline': 13
 #    'drugRegSpider.pipelines.SomePipeline': 300,
 }
 FILES_STORE = abspath('../../data/pdfs')
