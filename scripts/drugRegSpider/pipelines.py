@@ -74,7 +74,8 @@ class SQLiteRegistryStorePipeline(object):
         conn = sqlite3.connect(self.filename)
         conn.execute("""create table registry(
                             %s,
-                            certNum         text primary key);""" % (fld_sttmnt,))
+                            certNum         text primary key, 
+                            timestamp       DATETIME DEFAULT CURRENT_TIMESTAMP);""" % (fld_sttmnt,))
         for fn in self.FEED_EXPORT_FIELDS:
             if fn in ['name','mnn']:
                 conn.execute("create index %s on registry(%s);" % (fn,fn))
